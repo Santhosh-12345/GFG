@@ -6,33 +6,35 @@ using namespace std;
 class Solution
 {
     private:
-    void dfs(int node,vector<int>&vis,vector<int> adj[],stack<int>&st)
-    {
-        vis[node]=1;
-        for(auto it:adj[node])
-        {
-            if(!vis[it])
-            {
-                dfs(it,vis,adj,st);
-            }
-        }
-        st.push(node);
-    }
 	public: 
 	vector<int> topoSort(int V, vector<int> adj[]) 
 	{
-	    vector<int>vis(V,0);
-	    stack<int>st;
+	    vector<int>ans;
+	    queue<int>q;
+	    vector<int>indegree(V);
 	    for(int i=0;i<V;i++)
 	    {
-	        if(!vis[i])
-	        dfs(i,vis,adj,st);
+	        for(auto it:adj[i])
+	        indegree[it]++;
 	    }
-	    vector<int>ans;
-	    while(!st.empty())
+	    for(int i=0;i<V;i++)
 	    {
-	        ans.push_back(st.top());
-	        st.pop();
+	        if(indegree[i]==0)
+	        q.push(i);
+	    }
+	    while(!q.empty())
+	    {
+	        int node=q.front();
+	        ans.push_back(node);
+	        q.pop();
+	        for(auto it:adj[node])
+	        {
+	            indegree[it]--;
+	            if(indegree[it]==0)
+	            {
+	                q.push(it);
+	            }
+	        }
 	    }
 	    return ans;
 	}
